@@ -40,9 +40,15 @@ class User < ActiveRecord::Base
 
   def self.autenticate(email, submitted_password)
     user = find_by_email(email)
-    return nil if user.nil?
-    return user if user.has_password?(submitted_password)
+    (user && user.has_password?(submitted_password)) ? user : nil
+    #return nil if user.nil?
+    #return user if user.has_password?(submitted_password)
     # returns nil at the end of method which means that password is wrong
+  end
+
+  def self.authenticate_with_salt(id, cookie_salt)
+    user = find_by_id(id)
+    (user && user.salt == cookie_salt) ? user : nil
   end
 
   private
